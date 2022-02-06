@@ -2,47 +2,33 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] lottos, int[] win_nums) {
-        // 1. 로또 당첨 개수에 따른 순위 Map 생성
-        HashMap<Integer, Integer> rank_map = new HashMap<Integer, Integer>() {
-            {
-                put(6, 1);
-                put(5, 2);
-                put(4, 3);
-                put(3, 4);
-                put(2, 5);
-                put(1, 6);
-                put(0, 6);
-            }
-        };
-        
-        ArrayList<Integer> lotto_list = new ArrayList<>();
-        ArrayList<Integer> win_nums_list = new ArrayList<>();
-        
-        // 2. lotto arraylist 생성 (처리를 편하게 하기 위함)
-        for(int i = 0; i < lottos.length; i++)
+        HashMap<Integer, Boolean> lottos_map = new HashMap<>();
+        int[] lotto_rank = {6,6,5,4,3,2,1};
+
+        int zero_cnt = 0;
+        for(int lotto : lottos)
         {
-            lotto_list.add(lottos[i]);
-            win_nums_list.add(win_nums[i]);
+            if(lotto == 0)
+            {
+                zero_cnt++;
+                continue;
+            }
+            lottos_map.put(lotto, true);	
         }
 
-        // 3. 0 개수 구함
-        int zero_cnt = Collections.frequency(lotto_list, 0);
-        
-        // 4. 당첨 개수 구함
         int win_cnt = 0;
-        for(int i = 0; i < lottos.length; i++)
+        for(int win_lotto : win_nums)
         {
-            if(win_nums_list.contains(lottos[i]))
+            if(lottos_map.containsKey(win_lotto))
             {
                 win_cnt++;
             }
         }
-        
-        // 5. 당첨 개수와 0 개수에 따른 최소, 최대 rank
-        int[] answer = new int[2];
-        answer[0] = rank_map.get(win_cnt + zero_cnt);
-        answer[1] = rank_map.get(win_cnt);
-        
+
+        int max_rank = lotto_rank[zero_cnt + win_cnt];
+        int min_rank = lotto_rank[win_cnt];
+
+        int[] answer = {max_rank, min_rank};
         return answer;
     }
 }
